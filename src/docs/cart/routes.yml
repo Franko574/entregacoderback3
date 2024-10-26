@@ -1,0 +1,263 @@
+openapi: 3.0.0
+info:
+  title: API de Carrito
+  description: API para gestionar operaciones de carrito de compras.
+  version: 1.0.0
+
+components:
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Cart:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID del carrito
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartProduct"
+        createdAt:
+          type: string
+          format: date-time
+          description: Fecha de creación del carrito
+        updatedAt:
+          type: string
+          format: date-time
+          description: Fecha de última actualización del carrito
+    CartProduct:
+      type: object
+      properties:
+        product:
+          type: string
+          description: ID del producto en el carrito
+        quantity:
+          type: integer
+          description: Cantidad del producto
+    CartDto:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartProduct"
+
+security:
+  - jwtAuth: []
+
+paths:
+  /carts:
+    get:
+      summary: Obtener todos los carritos
+      operationId: getAllCarts
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: Lista de carritos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cart"
+        "500":
+          description: Error en el servidor
+
+    post:
+      summary: Crear un nuevo carrito
+      operationId: createCart
+      tags:
+        - Carts
+      security:
+        - jwtAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartDto"
+      responses:
+        "201":
+          description: Carrito creado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "400":
+          description: Error de validación
+        "401":
+          description: No autorizado
+
+  /carts/{id}:
+    get:
+      summary: Obtener un carrito por ID
+      operationId: getCartById
+      tags:
+        - Carts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Detalles del carrito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: Carrito no encontrado
+
+    put:
+      summary: Actualizar un carrito
+      operationId: updateCart
+      tags:
+        - Carts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Carrito actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: Carrito no encontrado
+
+    delete:
+      summary: Eliminar un carrito por ID
+      operationId: deleteCart
+      tags:
+        - Carts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Carrito eliminado
+        "404":
+          description: Carrito no encontrado
+
+  /carts/{idCart}/products/{idProd}:
+    post:
+      summary: Agregar un producto al carrito
+      operationId: addProductToCart
+      tags:
+        - Carts
+      parameters:
+        - name: idCart
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: idProd
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Producto agregado al carrito
+        "404":
+          description: Carrito o producto no encontrado
+
+    delete:
+      summary: Eliminar un producto del carrito
+      operationId: removeProductFromCart
+      tags:
+        - Carts
+      parameters:
+        - name: idCart
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: idProd
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Producto eliminado del carrito
+        "404":
+          description: Carrito o producto no encontrado
+
+  /carts/{idCart}/products/{idProd}/{quantity}:
+    put:
+      summary: Actualizar la cantidad de un producto en el carrito
+      operationId: updateProductQuantityInCart
+      tags:
+        - Carts
+      parameters:
+        - name: idCart
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: idProd
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: quantity
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Cantidad del producto actualizada
+        "404":
+          description: Carrito o producto no encontrado
+
+  /carts/clear/{idCart}:
+    delete:
+      summary: Vaciar el carrito
+      operationId: clearCart
+      tags:
+        - Carts
+      parameters:
+        - name: idCart
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Carrito vaciado exitosamente
+        "404":
+          description: Carrito no encontrado
+
+  /carts/{id}/purchase:
+    post:
+      summary: Finalizar la compra
+      operationId: purchaseCart
+      tags:
+        - Carts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Compra realizada exitosamente
+        "404":
+          description: Carrito no encontrado

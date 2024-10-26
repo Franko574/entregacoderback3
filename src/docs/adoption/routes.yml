@@ -1,0 +1,100 @@
+openapi: 3.0.0
+info:
+  title: Adoptme API
+  version: 1.0.0
+  description: API para gestionar adopciones de mascotas.
+
+servers:
+  - url: http://localhost:5001
+    description: Servidor de desarrollo local
+
+paths:
+  /adoptions:
+    get:
+      summary: Obtener todas las adopciones
+      operationId: getAllAdoptions
+      responses:
+        "200":
+          description: Lista de todas las adopciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Adoption"
+        "500":
+          description: Error interno del servidor
+
+  /adoptions/{aid}:
+    get:
+      summary: Obtener una adopción por ID
+      operationId: getAdoption
+      parameters:
+        - name: aid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la adopción
+      responses:
+        "200":
+          description: Detalles de una adopción
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Adoption"
+        "404":
+          description: Adopción no encontrada
+        "500":
+          description: Error interno del servidor
+
+  /adoptions/{uid}/{pid}:
+    post:
+      summary: Crear una nueva adopción
+      operationId: createAdoption
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la mascota
+      responses:
+        "201":
+          description: Adopción creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Adoption"
+        "400":
+          description: Solicitud incorrecta (datos insuficientes o inválidos)
+        "500":
+          description: Error interno del servidor
+
+components:
+  schemas:
+    Adoption:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID único de la adopción
+        userId:
+          type: string
+          description: ID del usuario que adopta
+        petId:
+          type: string
+          description: ID de la mascota adoptada
+        adoptionDate:
+          type: string
+          format: date
+          description: Fecha de la adopción
+      required:
+        - userId
+        - petId

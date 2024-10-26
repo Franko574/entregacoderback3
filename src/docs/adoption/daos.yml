@@ -1,0 +1,155 @@
+/adoptions:
+  get:
+    summary: Obtener todas las adopciones
+    operationId: getAllAdoptions
+    parameters:
+      - name: params
+        in: query
+        schema:
+          type: object
+        description: Filtros para buscar adopciones
+    responses:
+      '200':
+        description: Lista de todas las adopciones que coinciden
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Adoption'
+      '500':
+        description: Error interno del servidor
+
+/adoptions/{id}:
+  get:
+    summary: Obtener una adopción por ID
+    operationId: getAdoptionById
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID de la adopción
+    responses:
+      '200':
+        description: Datos de la adopción
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Adoption'
+      '404':
+        description: Adopción no encontrada
+      '500':
+        description: Error interno del servidor      
+
+/adoptions:
+  post:
+    summary: Crear una nueva adopción
+    operationId: createAdoption
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AdoptionCreate'
+          example:
+            owner: "61a0f3b3d3a5b4aeb0ef3c5b"
+            pet: "62b1d3f9f3c6e1a0f0e4a1d1"
+    responses:
+      '201':
+        description: Adopción creada exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Adoption'
+      '400':
+        description: Solicitud incorrecta
+      '500':
+        description: Error interno del servidor  
+
+/adoptions/{id}:
+  put:
+    summary: Actualizar una adopción
+    operationId: updateAdoption
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID de la adopción a actualizar
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AdoptionUpdate'
+    responses:
+      '200':
+        description: Adopción actualizada exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Adoption'
+      '404':
+        description: Adopción no encontrada
+      '500':
+        description: Error interno del servidor
+
+/adoptions/{id}:
+  delete:
+    summary: Eliminar una adopción
+    operationId: deleteAdoption
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID de la adopción a eliminar
+    responses:
+      '200':
+        description: Adopción eliminada exitosamente
+      '404':
+        description: Adopción no encontrada
+      '500':
+        description: Error interno del servidor
+
+components:
+  schemas:
+    Adoption:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID de la adopción
+        owner:
+          type: string
+          description: ID del usuario que adopta
+        pet:
+          type: string
+          description: ID de la mascota adoptada
+      required:
+        - owner
+        - pet
+
+    AdoptionCreate:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: ID del usuario que adopta
+        pet:
+          type: string
+          description: ID de la mascota
+      required:
+        - owner
+        - pet
+
+    AdoptionUpdate:
+      type: object
+      properties:
+        pet:
+          type: string
+          description: Nuevo ID de la mascota

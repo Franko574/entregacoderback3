@@ -1,0 +1,30 @@
+components:
+  schemas:
+    Adoption:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID único de la adopción (generado automáticamente por MongoDB)
+        owner:
+          type: string
+          description: ID del usuario que realiza la adopción
+        pet:
+          type: string
+          description: ID de la mascota adoptada
+      required:
+        - owner
+        - pet
+
+    AdoptionCreate:
+      type: object
+      properties:
+        owner:
+          type: string
+          description: ID del usuario que realiza la adopción
+        pet:
+          type: string
+          description: ID de la mascota adoptada
+      required:
+        - owner
+        - pet

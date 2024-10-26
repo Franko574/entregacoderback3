@@ -1,0 +1,159 @@
+/adoptions:
+  get:
+    summary: Obtener todas las adopciones
+    operationId: getAllAdoptions
+    responses:
+      '200':
+        description: Lista de todas las adopciones
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Adoption'
+      '500':
+        description: Error interno del servidor
+
+/adoptions/{id}:
+  get:
+    summary: Obtener una adopción por ID
+    operationId: getAdoptionById
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID de la adopción
+    responses:
+      '200':
+        description: Detalles de una adopción
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Adoption'
+      '404':
+        description: Adopción no encontrada
+      '500':
+        description: Error interno del servidor
+
+/adoptions:
+  post:
+    summary: Crear una nueva adopción
+    operationId: createAdoption
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AdoptionCreate'
+          example:
+            userId: "61a0f3b3d3a5b4aeb0ef3c5b"
+            petId: "62b1d3f9f3c6e1a0f0e4a1d1"
+            adoptionDate: "2023-01-01"
+    responses:
+      '201':
+        description: Adopción creada exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Adoption'
+      '400':
+        description: Solicitud incorrecta
+      '500':
+        description: Error interno del servidor
+
+/adoptions/{id}:
+  put:
+    summary: Actualizar una adopción
+    operationId: updateAdoption
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID de la adopción
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AdoptionUpdate'
+          example:
+            petId: "62b1d3f9f3c6e1a0f0e4a1d1"
+    responses:
+      '200':
+        description: Adopción actualizada exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Adoption'
+      '404':
+        description: Adopción no encontrada
+      '500':
+        description: Error interno del servidor
+
+/adoptions/{id}:
+  delete:
+    summary: Eliminar una adopción
+    operationId: deleteAdoption
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID de la adopción
+    responses:
+      '200':
+        description: Adopción eliminada exitosamente
+      '404':
+        description: Adopción no encontrada
+      '500':
+        description: Error interno del servidor
+components:
+  schemas:
+    Adoption:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID único de la adopción
+        userId:
+          type: string
+          description: ID del usuario que realiza la adopción
+        petId:
+          type: string
+          description: ID de la mascota adoptada
+        adoptionDate:
+          type: string
+          format: date
+          description: Fecha de la adopción
+      required:
+        - userId
+        - petId
+
+    AdoptionCreate:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: ID del usuario que realiza la adopción
+        petId:
+          type: string
+          description: ID de la mascota adoptada
+        adoptionDate:
+          type: string
+          format: date
+          description: Fecha de la adopción
+      required:
+        - userId
+        - petId
+
+    AdoptionUpdate:
+      type: object
+      properties:
+        petId:
+          type: string
+          description: Nuevo ID de la mascota (en caso de actualizar)

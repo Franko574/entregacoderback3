@@ -1,0 +1,158 @@
+/carts:
+  post:
+    summary: Crear un nuevo carrito
+    operationId: createCart
+    responses:
+      "201":
+        description: Carrito creado exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Cart"
+      "500":
+        description: Error al crear el carrito
+/carts:
+  get:
+    summary: Obtener todos los carritos
+    operationId: getAllCarts
+    responses:
+      '200':
+        description: Lista de carritos
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Cart'
+      '500':
+        description: Error al obtener los carritos
+
+/carts/{id}:
+  get:
+    summary: Obtener un carrito por ID
+    operationId: getCartById
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID del carrito
+    responses:
+      '200':
+        description: Detalles del carrito
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      '404':
+        description: Carrito no encontrado
+      '500':
+        description: Error al obtener el carrito
+/carts/{cartId}/products/{productId}:
+  post:
+    summary: Agregar un producto al carrito
+    operationId: addProductToCart
+    parameters:
+      - name: cartId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID del carrito
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID del producto
+    responses:
+      '200':
+        description: Producto agregado al carrito
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      '404':
+        description: Carrito o producto no encontrado
+      '500':
+        description: Error al agregar el producto
+/carts/{cartId}/products/{productId}:
+  delete:
+    summary: Eliminar un producto del carrito
+    operationId: removeProductFromCart
+    parameters:
+      - name: cartId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID del carrito
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID del producto
+    responses:
+      '200':
+        description: Producto eliminado del carrito
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      '404':
+        description: Carrito o producto no encontrado
+      '500':
+        description: Error al eliminar el producto
+
+/carts/{cartId}/clear:
+  post:
+    summary: Limpiar el carrito
+    operationId: clearCart
+    parameters:
+      - name: cartId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID del carrito
+    responses:
+      '200':
+        description: Carrito limpiado exitosamente
+      '404':
+        description: Carrito no encontrado
+      '500':
+        description: Error al limpiar el carrito
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID único del carrito
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartProduct'
+        createdAt:
+          type: string
+          format: date-time
+          description: Fecha de creación del carrito
+        updatedAt:
+          type: string
+          format: date-time
+          description: Fecha de última actualización del carrito
+
+    CartProduct:
+      type: object
+      properties:
+        product:
+          type: string
+          description: ID del producto en el carrito
+        quantity:
+          type: integer
+          description: Cantidad del producto en el carrito
+          example: 2

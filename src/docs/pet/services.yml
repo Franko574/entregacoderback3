@@ -1,0 +1,308 @@
+openapi: 3.0.0
+info:
+  title: Pet Services API
+  description: API for managing pet services operations.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5001
+paths:
+  /api/pets:
+    get:
+      summary: Retrieve a list of pets
+      responses:
+        200:
+          description: A list of pets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    name:
+                      type: string
+                    specie:
+                      type: string
+                    birthDate:
+                      type: string
+                      format: date
+                      nullable: true
+                    adopted:
+                      type: boolean
+                    owner:
+                      type: string
+                      nullable: true
+                    image:
+                      type: string
+                      nullable: true
+        500:
+          description: Error retrieving pets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error retrieving pets."
+
+    post:
+      summary: Create a new pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Buddy"
+                specie:
+                  type: string
+                  example: "Dog"
+                birthDate:
+                  type: string
+                  format: date
+                  example: "2020-01-01"
+                adopted:
+                  type: boolean
+                  example: false
+                owner:
+                  type: string
+                  example: "owner_user_id"
+                image:
+                  type: string
+                  example: "http://example.com/image.jpg"
+      responses:
+        201:
+          description: Pet created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name:
+                    type: string
+                  specie:
+                    type: string
+                  birthDate:
+                    type: string
+                    format: date
+                    nullable: true
+                  adopted:
+                    type: boolean
+                  owner:
+                    type: string
+                    nullable: true
+                  image:
+                    type: string
+                    nullable: true
+        400:
+          description: Bad request if required fields are missing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Validation Error!"
+        500:
+          description: Error while creating pet
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  details:
+                    type: string
+
+  /api/pets/{id}:
+    get:
+      summary: Retrieve a pet by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the pet to retrieve
+          schema:
+            type: string
+      responses:
+        200:
+          description: Details of the pet
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name:
+                    type: string
+                  specie:
+                    type: string
+                  birthDate:
+                    type: string
+                    format: date
+                    nullable: true
+                  adopted:
+                    type: boolean
+                  owner:
+                    type: string
+                    nullable: true
+                  image:
+                    type: string
+                    nullable: true
+        404:
+          description: Pet not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Pet id {id} not found"
+        500:
+          description: Error while fetching the pet
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  details:
+                    type: string
+
+    put:
+      summary: Update a pet by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the pet to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Buddy"
+                specie:
+                  type: string
+                  example: "Dog"
+                birthDate:
+                  type: string
+                  format: date
+                  example: "2020-01-01"
+                adopted:
+                  type: boolean
+                  example: false
+                owner:
+                  type: string
+                  example: "owner_user_id"
+                image:
+                  type: string
+                  example: "http://example.com/image.jpg"
+      responses:
+        200:
+          description: Pet updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name:
+                    type: string
+                  specie:
+                    type: string
+                  birthDate:
+                    type: string
+                    format: date
+                    nullable: true
+                  adopted:
+                    type: boolean
+                  owner:
+                    type: string
+                    nullable: true
+                  image:
+                    type: string
+                    nullable: true
+        404:
+          description: Pet not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Pet id {id} not found"
+        500:
+          description: Error while updating the pet
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  details:
+                    type: string
+
+    delete:
+      summary: Remove a pet by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the pet to remove
+          schema:
+            type: string
+      responses:
+        200:
+          description: Pet removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "ok"
+        404:
+          description: Pet not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Pet id {id} not found"
+        500:
+          description: Error while removing the pet
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  details:
+                    type: string

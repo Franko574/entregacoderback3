@@ -1,0 +1,105 @@
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID único del carrito
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                description: ID del producto en el carrito
+              quantity:
+                type: integer
+                description: Cantidad del producto en el carrito
+                example: 2
+        createdAt:
+          type: string
+          format: date-time
+          description: Fecha de creación del carrito
+        updatedAt:
+          type: string
+          format: date-time
+          description: Fecha de última actualización del carrito
+      required:
+        - products
+
+    CartCreate:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                description: ID del producto a agregar al carrito
+              quantity:
+                type: integer
+                description: Cantidad del producto
+      required:
+        - products
+
+    CartUpdate:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                description: ID del producto a actualizar en el carrito
+              quantity:
+                type: integer
+                description: Nueva cantidad del producto
+      required:
+        - products
+
+/carts/{id}:
+  get:
+    summary: Obtener un carrito por ID
+    operationId: getCartById
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID del carrito
+    responses:
+      "200":
+        description: Detalles del carrito
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Cart"
+      "404":
+        description: Carrito no encontrado
+
+/carts:
+  post:
+    summary: Crear un nuevo carrito
+    operationId: createCart
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CartCreate"
+    responses:
+      "201":
+        description: Carrito creado exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Cart"
+      "400":
+        description: Solicitud incorrecta

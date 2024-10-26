@@ -1,0 +1,210 @@
+openapi: 3.0.0
+info:
+  title: Cart API
+  description: API for managing shopping carts and their operations.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5001
+paths:
+  /api/carts:
+    get:
+      summary: Get all carts
+      responses:
+        200:
+          description: A list of carts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    products:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          product:
+                            type: string
+                          quantity:
+                            type: integer
+    post:
+      summary: Create a new cart
+      responses:
+        201:
+          description: Cart created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+
+  /api/carts/{id}:
+    get:
+      summary: Get a cart by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the cart to retrieve
+          schema:
+            type: string
+      responses:
+        200:
+          description: Cart details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product:
+                          type: string
+                        quantity:
+                          type: integer
+        404:
+          description: Cart not found
+
+    put:
+      summary: Update a cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the cart to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product:
+                        type: string
+                      quantity:
+                        type: integer
+      responses:
+        200:
+          description: Cart updated successfully
+
+    delete:
+      summary: Delete a cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the cart to delete
+          schema:
+            type: string
+      responses:
+        204:
+          description: Cart deleted successfully
+
+  /api/carts/{idCart}/products/{idProd}:
+    post:
+      summary: Add a product to a cart
+      parameters:
+        - name: idCart
+          in: path
+          required: true
+          description: ID of the cart
+          schema:
+            type: string
+        - name: idProd
+          in: path
+          required: true
+          description: ID of the product to add
+          schema:
+            type: string
+      responses:
+        200:
+          description: Product added to cart successfully
+
+    delete:
+      summary: Remove a product from a cart
+      parameters:
+        - name: idCart
+          in: path
+          required: true
+          description: ID of the cart
+          schema:
+            type: string
+        - name: idProd
+          in: path
+          required: true
+          description: ID of the product to remove
+          schema:
+            type: string
+      responses:
+        200:
+          description: Product removed from cart successfully
+
+    put:
+      summary: Update product quantity in a cart
+      parameters:
+        - name: idCart
+          in: path
+          required: true
+          description: ID of the cart
+          schema:
+            type: string
+        - name: idProd
+          in: path
+          required: true
+          description: ID of the product
+          schema:
+            type: string
+        - name: quantity
+          in: path
+          required: true
+          description: New quantity for the product
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Product quantity updated successfully
+
+  /api/carts/clear/{idCart}:
+    delete:
+      summary: Clear all products from a cart
+      parameters:
+        - name: idCart
+          in: path
+          required: true
+          description: ID of the cart to clear
+          schema:
+            type: string
+      responses:
+        200:
+          description: Cart cleared successfully
+
+  /api/carts/{id}/purchase:
+    post:
+      summary: Finalize the purchase for a cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the cart to purchase
+          schema:
+            type: string
+      responses:
+        200:
+          description: Purchase finalized successfully

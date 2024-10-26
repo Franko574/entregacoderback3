@@ -1,0 +1,113 @@
+openapi: 3.0.0
+info:
+  title: User Management API
+  description: API for managing users in the system.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5001
+paths:
+  /api/users:
+    get:
+      summary: Get all users
+      responses:
+        200:
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+                    email:
+                      type: string
+                    age:
+                      type: string
+                    role:
+                      type: string
+                      enum: ["admin", "user"]
+                    cart:
+                      type: string
+                      nullable: true
+        500:
+          description: Error while fetching users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  details:
+                    type: string
+
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: "John"
+                last_name:
+                  type: string
+                  example: "Doe"
+                email:
+                  type: string
+                  example: "john.doe@example.com"
+                age:
+                  type: string
+                  example: "30"
+                password:
+                  type: string
+                  example: "securepassword"
+      responses:
+        201:
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  first_name:
+                    type: string
+                  last_name:
+                    type: string
+                  email:
+                    type: string
+                  age:
+                    type: string
+                  role:
+                    type: string
+        400:
+          description: Bad request if required fields are missing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        500:
+          description: Error while creating user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  details:
+                    type: string
